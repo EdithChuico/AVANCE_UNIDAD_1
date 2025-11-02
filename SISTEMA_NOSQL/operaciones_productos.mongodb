@@ -1,0 +1,80 @@
+use("techstore_inventory")
+db.productos.drop(),
+    //Modelado de la colección productos
+    db.createCollection("productos", {
+        validator: {
+            $jsonSchema: {
+                bsonType: "object",
+                required: ["nombre", "sku", "precio_unitario", "stock"],
+                properties: {
+                    nombre: {
+                        bsonType: "string",
+                    },
+                    sku: {
+                        bsonType: "string",
+                    },
+                    tipo_producto: {
+                        bsonType: "string",
+                        enum: ["Laptop", "Smartphone", "Monitor"],
+                    },
+                    precio_unitario: {
+                        bsonType: "number",
+                    },
+                    stock: {
+                        bsonType: "number",
+                    },
+                    especificaciones: {
+                        bsonType: "object"
+                    },
+                },
+            }
+        }
+    }
+    );
+//Creación de índice unico sku
+db.productos.createIndex({ sku: 1 }, { unique: true })
+//Prueba de inserción de tres productos distintos
+db.productos.insertMany([
+    {
+        "nombre": "Samsung A20",
+        "sku": "Sam-001",
+        "precio_unitario": 250.00,
+        "stock": 20,
+        "tipo_producto": "Smartphone",
+        "especificaciones": {
+            "pantalla": "6.2\"",
+            "ram_gb": 8,
+            "almacenamiento_gb": 256
+        }
+    },
+    {
+        "nombre": "Laptop ACER",
+        "sku": "Ace-001",
+        "precio_unitario": 680.00,
+        "stock": 40,
+        "tipo_producto": "Laptop",
+        "especificaciones": {
+            "cpu": "Core i7",
+            "ram_gb": 16,
+            "almacenamiento_gb": 512,
+            "dimensiones": {
+                "alto_cm": 2.5,
+                "ancho_cm": 35,
+            }
+        }
+    },
+    {
+        "nombre": "Monitor LG",
+        "sku": "LG-001",
+        "precio_unitario": 350.00,
+        "stock": 20,
+        "tipo_producto": "Monitor",
+        "especificaciones": {
+            "resolucion": "4K",
+            "tasa_refresco": "240Hz"
+        }
+    }
+]);
+use("techstore_inventory")
+//Verificación de datos
+db.productos.find();
